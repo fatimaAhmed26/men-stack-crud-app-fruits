@@ -19,8 +19,9 @@ app.get('/' , async (req ,res)=>{
 
 })
 app.get('/fruits', async (req,res)=>{
+let notReady =  await Fruit.find({isReadyToEat :false})
 
-    res.send(createdFruit)
+    res.send(notReady)
 })
 
 app.listen(3000, ()=>{
@@ -32,3 +33,5 @@ console.log('port 3000')
 // fruitData.isReadyToEat= false
 //     //use mongoose to add to the database 
 //  let createdFruit =  await Fruit.create(fruitData)
+//find all fruits with name of mango 
+// let allBanana =  await Fruit.find({name :'Mango'})
