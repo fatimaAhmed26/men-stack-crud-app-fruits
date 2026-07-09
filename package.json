@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/fatimaAhmed26/men-stack-crud-app-fruits/issues"
   },
-  "homepage": "https://github.com/fatimaAhmed26/men-stack-crud-app-fruits#readme"
+  "homepage": "https://github.com/fatimaAhmed26/men-stack-crud-app-fruits#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "morgan": "^1.11.0"
+  }
 }
