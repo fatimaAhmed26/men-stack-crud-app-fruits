@@ -12,16 +12,35 @@ mongoose.connection.on('connected',() =>{
 console.log(`connected to MongoDB ${mongoose.connection.name}🥭`)
 })
 const Fruit= require('./models/fruits.js')
+app.use(express.urlencoded({ extended: false }));
 app.use(morgan('div'))
-
+//home page
 app.get('/' , async (req ,res)=>{
     res.render('home.ejs')
 
 })
-app.get('/fruits', async (req,res)=>{
-let findFruit =  await Fruit.findById("6a4f6c83c6990cc917e0d73f")
-    res.send(findFruit)
+//form for creating a new fruit 
+app.get('/fruits/new', async (req,res)=>{
+res.render('new.ejs')
 })
+//post /fruits 
+app.post('/fruits',async (req,res) =>{
+    //
+    const fruitData = {}
+    // fruitData.name = req.body.name
+    // fruitData.isReadyToEat = req.body.isReadyToEat
+    //     res.send(req.body)
+    fruitData.name = req.body.name
+
+    if(req.body.isReadyToEat === 'on'){
+        fruitData.isReadyToEat =true
+
+    }else{
+        fruitData.isReadyToEat = false
+    }
+    let createdFruit = await Fruit.create(fruitData)
+    res.send(createdFruit)
+    })
 
 app.listen(3000, ()=>{
 console.log('port 3000')
