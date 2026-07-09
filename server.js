@@ -5,14 +5,17 @@ const dotenv =require('dotenv').config() //making .env file available
 const express =require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const path= require('path')
 
 const app = express()
 mongoose.connect(process.env.MONGODB_URI)
 mongoose.connection.on('connected',() =>{
 console.log(`connected to MongoDB ${mongoose.connection.name}🥭`)
 })
-const Fruit= require('./models/fruits.js')
+const Fruit= require('./models/fruits.js');
 app.use(express.urlencoded({ extended: false }));
+ // new code below this line
+ app.use(express.static(path.join(__dirname, "public")));
 app.use(morgan('div'))
 //home page
 app.get('/' , async (req ,res)=>{
@@ -39,7 +42,7 @@ app.post('/fruits',async (req,res) =>{
         fruitData.isReadyToEat = false
     }
     let createdFruit = await Fruit.create(fruitData)
-    res.send(createdFruit)
+    res.redirect('/')
     })
 
 app.listen(3000, ()=>{
