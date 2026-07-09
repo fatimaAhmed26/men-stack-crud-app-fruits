@@ -19,9 +19,8 @@ app.get('/' , async (req ,res)=>{
 
 })
 app.get('/fruits', async (req,res)=>{
-let notReady =  await Fruit.find({isReadyToEat :false})
-
-    res.send(notReady)
+let findFruit =  await Fruit.findById("6a4f6c83c6990cc917e0d73f")
+    res.send(findFruit)
 })
 
 app.listen(3000, ()=>{
@@ -33,5 +32,21 @@ console.log('port 3000')
 // fruitData.isReadyToEat= false
 //     //use mongoose to add to the database 
 //  let createdFruit =  await Fruit.create(fruitData)
-//find all fruits with name of mango 
-// let allBanana =  await Fruit.find({name :'Mango'})
+    //find all fruits with name of mango 
+    // let allBanana =  await Fruit.find({name :'Mango'})
+    
+    //update the fruit in the database -findOne if finding the first one 
+    //let updateFruit =  await Fruit.findOneAndUpdate({name:'Mango'}, {name:'Pineapple'}, {new: true})
+    // res.send(updateFruit)
+
+    //updating by id 
+    // let updateFruit =  await Fruit.findByIdAndUpdate("6a4f6a50d6295e58960779a4", {name:'Green Apply'}, {new: true})
+    // res.send(updateFruit)
+
+    // to delete somthing in the database
+    // let deleteFruit =  await Fruit.findByIdAndDelete("6a4f6a50d6295e58960779a4")
+    // res.send(deleteFruit)
+
+    //find by id 
+    // let findFruit =  await Fruit.findById("6a4f6c83c6990cc917e0d73f")
+    // res.send(findFruit)
