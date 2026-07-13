@@ -8,6 +8,8 @@ const mongoose = require('mongoose')
 const path= require('path')
 const methodOverride = require('method-override')
 
+const fruitsCtrl =require('./controllers/fruits.controllers.js')
+
 const app = express()
 mongoose.connect(process.env.MONGODB_URI)
 mongoose.connection.on('connected',() =>{
@@ -30,67 +32,16 @@ app.get('/fruits/new', async (req,res)=>{
 res.render('new.ejs')
 })
 //post /fruits 
-app.post('/fruits',async (req,res) =>{
-    //
-    const fruitData = {}
-    // fruitData.name = req.body.name
-    // fruitData.isReadyToEat = req.body.isReadyToEat
-    //     res.send(req.body)
-    fruitData.name = req.body.name
-
-    if(req.body.isReadyToEat === 'on'){
-        fruitData.isReadyToEat =true
-
-    }else{
-        fruitData.isReadyToEat = false
-    }
-    let createdFruit = await Fruit.create(fruitData)
-    res.redirect('/fruits')
-    })
+app.post('/fruits',fruitsCtrl.newFruit)
     //get all fruits /fruits 
-    app.get('/fruits',async (req,res)=>{
-          let allFruits = await Fruit.find()
-        res.render('index.ejs',{
-            allFruits
-        })
-      
-       
-    })
+    app.get('/fruits',fruitsCtrl.index)
     //get show route 
-    app.get('/fruits/:fruitId' ,async(req,res)=>{
-        let findFruit= await Fruit.findById(req.params.fruitId)
+    app.get('/fruits/:fruitId' ,fruitsCtrl.show)
 
-         res.render('show.ejs',{
-            findFruit
-         })
-    })
-
-    app.delete('/fruits/:fruitId', async(req,res) =>{
-        await Fruit.findByIdAndDelete(req.params.fruitId)
-            res.redirect('/fruits')
-    })
+    app.delete('/fruits/:fruitId', fruitsCtrl.deleteFruit)
     // edit (put)
-    app.get('/fruits/:fruitId/edit', async (req,res) =>{
-        let findFruit= await Fruit.findById(req.params.fruitId)
- console.log(findFruit)
-        res.render('edit.ejs',{
-            findFruit
-        })
-    })
-    app.put('/fruits/:fruitId',async (req,res) =>{
-        console.log(req.body)
-        const fruitData = {}
-    fruitData.name = req.body.name
-    
-    if(req.body.isReadyToEat === 'on'){
-        fruitData.isReadyToEat =true
-
-    }else{
-        fruitData.isReadyToEat = false
-    }
-       let updateFruit =  await Fruit.findByIdAndUpdate(req.params.fruitId,fruitData,{new :true})
-            res.redirect(`/fruits/${req.params.fruitId}`)
-    })
+    app.get('/fruits/:fruitId/edit',fruitsCtrl.edit)
+    app.put('/fruits/:fruitId',fruitsCtrl.update)
 app.listen(3000, ()=>{
 console.log('port 3000')
 })
@@ -111,7 +62,7 @@ console.log('port 3000')
     // let updateFruit =  await Fruit.findByIdAndUpdate("6a4f6a50d6295e58960779a4", {name:'Green Apply'}, {new: true})
     // res.send(updateFruit)
 
-    // to delete somthing in the database
+    // to delete something in the database
     // let deleteFruit =  await Fruit.findByIdAndDelete("6a4f6a50d6295e58960779a4")
     // res.send(deleteFruit)
 
