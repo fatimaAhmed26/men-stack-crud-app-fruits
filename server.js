@@ -6,6 +6,7 @@ const express =require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 const path= require('path')
+const methodOverride = require('method-override')
 
 const app = express()
 mongoose.connect(process.env.MONGODB_URI)
@@ -14,13 +15,15 @@ console.log(`connected to MongoDB ${mongoose.connection.name}🥭`)
 })
 const Fruit= require('./models/fruits.js');
 app.use(express.urlencoded({ extended: false }));
- // new code below this line
+//override 
+app.use(methodOverride ('_method'))
+
  app.use(express.static(path.join(__dirname, "public")));
-app.use(morgan('div'))
+app.use(morgan('div')) 
+// new code below this line
 //home page
 app.get('/' , async (req ,res)=>{
     res.render('home.ejs')
-
 })
 //form for creating a new fruit 
 app.get('/fruits/new', async (req,res)=>{
@@ -42,9 +45,52 @@ app.post('/fruits',async (req,res) =>{
         fruitData.isReadyToEat = false
     }
     let createdFruit = await Fruit.create(fruitData)
-    res.redirect('/')
+    res.redirect('/fruits')
+    })
+    //get all fruits /fruits 
+    app.get('/fruits',async (req,res)=>{
+          let allFruits = await Fruit.find()
+        res.render('index.ejs',{
+            allFruits
+        })
+      
+       
+    })
+    //get show route 
+    app.get('/fruits/:fruitId' ,async(req,res)=>{
+        let findFruit= await Fruit.findById(req.params.fruitId)
+
+         res.render('show.ejs',{
+            findFruit
+         })
     })
 
+    app.delete('/fruits/:fruitId', async(req,res) =>{
+        await Fruit.findByIdAndDelete(req.params.fruitId)
+            res.redirect('/fruits')
+    })
+    // edit (put)
+    app.get('/fruits/:fruitId/edit', async (req,res) =>{
+        let findFruit= await Fruit.findById(req.params.fruitId)
+ console.log(findFruit)
+        res.render('edit.ejs',{
+            findFruit
+        })
+    })
+    app.put('/fruits/:fruitId',async (req,res) =>{
+        console.log(req.body)
+        const fruitData = {}
+    fruitData.name = req.body.name
+    
+    if(req.body.isReadyToEat === 'on'){
+        fruitData.isReadyToEat =true
+
+    }else{
+        fruitData.isReadyToEat = false
+    }
+       let updateFruit =  await Fruit.findByIdAndUpdate(req.params.fruitId,fruitData,{new :true})
+            res.redirect(`/fruits/${req.params.fruitId}`)
+    })
 app.listen(3000, ()=>{
 console.log('port 3000')
 })
